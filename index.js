@@ -1,9 +1,10 @@
-const mdLinks = (path, links) => {
+const mdLinks = (path) => {
   return new Promise((resolve, reject) => {
     if (path) {
-      resolve(links);
+      resolve('Éxito');
+    }else{
+      reject('La ruta no existe');
     }
-    reject(error);
   });
 };
 
