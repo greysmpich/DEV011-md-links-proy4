@@ -1,6 +1,10 @@
 const path = require('path');
+const fs = require('fs');
 
-exports.absolutePath = (rutaRelativa) => {
-  return path.resolve(rutaRelativa)
+exports.toAbsolutePath = (relativePath) => {
+  return path.resolve(relativePath)
 }
 
+exports.verifyPathExists = (absolutePath) => {
+ return fs.existsSync(absolutePath)
+}
