@@ -19,3 +19,19 @@ exports.isMarkdownFile = (absolutePath) => {
 exports.readMarkdownFile = (absolutePath) => {
     return readFile(absolutePath, { encoding: "utf8" }); 
 };
+
+exports.findLinks = (content, absolutePath) => {
+  const regExpLink = /\[([^\]]*)\]\((.*?)\)/g;
+  const links = [];
+  let coincidence;
+  const fileName = path.basename(absolutePath);
+  while ((coincidence = regExpLink.exec(content)) !== null) {
+    const linkObject = {
+      href: coincidence[2],
+      text: coincidence[1],
+      file: fileName,
+    };
+    links.push(linkObject);
+  }
+  return links;
+};
