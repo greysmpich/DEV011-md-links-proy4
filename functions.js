@@ -2,6 +2,10 @@ const path = require("path");
 const fs = require("fs");
 const { readFile } = require("fs/promises");
 
+exports.isAbsolutePath = (relativePath) => {
+  return path.isAbsolute(relativePath);
+};
+
 exports.toAbsolutePath = (relativePath) => {
   return path.resolve(relativePath);
 };
