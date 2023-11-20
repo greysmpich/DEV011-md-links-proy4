@@ -35,4 +35,11 @@ describe('mdLinks', () => {
     });
    }
   });
+  test('Si puede leer el archivo y validate "false", debe resolver la promesa con un array de objetos', () => {
+    const markdownPath = './README.md';
+    return mdLinks(markdownPath, false).then((extractedLinks) => {
+      expect(extractedLinks).toBeDefined();
+      expect(Array.isArray(extractedLinks)).toBe(true);
+    });
+  });
 });
