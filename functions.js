@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { readFile } = require("fs/promises");
+const axios = require("axios");
 
 exports.isAbsolutePath = (relativePath) => {
   return path.isAbsolute(relativePath);
@@ -21,7 +22,10 @@ exports.isMarkdownFile = (absolutePath) => {
 };
 
 exports.readMarkdownFile = (absolutePath) => {
-    return readFile(absolutePath, { encoding: "utf8" }); 
+  return new Promise((resolve) => {
+    readFile(absolutePath, { encoding: "utf8" })
+    .then((content) => { resolve(content); })
+  });
 };
 
 exports.findLinks = (content, absolutePath) => {
@@ -38,4 +42,21 @@ exports.findLinks = (content, absolutePath) => {
     links.push(linkObject);
   }
   return links;
+};
+
+exports.validateLinks = (links) => {
+  const linkPromises = links.map((link) => {
+    return axios.head(link.href)
+      .then((response) => {
+        link.status = response.status;
+        link.ok = response.status >= 200 && response.status < 300;
+        return link;
+      })
+      .catch((error) => {
+        link.status = error.response ? error.response.status : "N/A";
+        link.ok = false;
+        return link;
+      });
+  });
+  return Promise.all(linkPromises);
 };
