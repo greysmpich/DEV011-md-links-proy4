@@ -5,7 +5,12 @@ describe('mdLinks', () => {
   test("Retorna una promesa", () => {
     expect(mdLinks("./README.md")).toBeInstanceOf(Promise);
   });
-  test('Verifica si la ruta es absoluta, si no lo es la convierte en una', () => {  
+  test('Debería retornar la ruta absoluta si es una ruta absoluta', () => {
+    const absolutePath = functions.toAbsolutePath('./README.md');
+    expect(functions.isAbsolutePath(absolutePath)).toBe(true);
+    expect(absolutePath).toBe(absolutePath);
+  });
+  test('Debería convertir la ruta a absoluta si es una ruta relativa', () => {  
     const relativePath = './README.md';
     const absolutePath = functions.isAbsolutePath(relativePath) ? relativePath : functions.toAbsolutePath(relativePath);
     expect(functions.isAbsolutePath(relativePath)).toBe(false);
@@ -16,26 +21,20 @@ describe('mdLinks', () => {
       expect(error).toBe('La ruta no existe');
     })
   });
-  test('Debería rechazar con "El archivo no es un archivo Markdown" si la ruta existe pero no es un archivo Markdown', () => {
+  test('Debería rechazar con "El archivo no es un archivo markdown" si la ruta existe pero no es un archivo Markdown', () => {
     return mdLinks('./thumb.png').catch((error) => {
-      expect(error).toBe('El archivo no es un archivo Markdown')
+      expect(error).toBe('El archivo no es un archivo markdown')
     })
   });
-  test('Si puede leer el archivo debe resolver la promesa con un array, si no debe rechazar la promesa con un error', () => {
-   try{
-    return mdLinks('./README.md').then((extractedLinks) => {
+  test('Debería resolver la promesa con un array de objets(links) cuando lee el archivo', () => {
+    const existingMarkdownPath = './README.md';
+  
+    return mdLinks(existingMarkdownPath).then((extractedLinks) => {
       expect(extractedLinks).toBeDefined();
       expect(Array.isArray(extractedLinks)).toBe(true);
     })
-   } catch {
-    const markdownPath = './existingMarkdownFile.md';
-  
-    return mdLinks(markdownPath).catch((error) => {
-      expect(error.message).toContain('Error al leer el archivo Markdown');
-    });
-   }
   });
-  test('Si puede leer el archivo y validate "false", debe resolver la promesa con un array de objetos', () => {
+  test('Si validate es "false", debe resolver la promesa con un array de objetos(links)', () => {
     const markdownPath = './README.md';
     return mdLinks(markdownPath, false).then((extractedLinks) => {
       expect(extractedLinks).toBeDefined();
