@@ -1,5 +1,5 @@
-const { mdLinks } = require('../index.js');
-const functions = require('../functions.js');
+const { mdLinks } = require('../src/index.js');
+const functions = require('../src/functions.js');
 
 describe('mdLinks', () => {
   test("Retorna una promesa", () => {
