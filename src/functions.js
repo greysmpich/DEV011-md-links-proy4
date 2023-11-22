@@ -49,12 +49,12 @@ exports.validateLinks = (links) => {
     return axios.head(link.href)
       .then((response) => {
         link.status = response.status;
-        link.ok = response.status >= 200 && response.status < 300;
+        link.ok = response.status >= 200 && response.status < 300 ? 'ok' : 'fail';
         return link;
       })
       .catch((error) => {
         link.status = error.response ? error.response.status : "N/A";
-        link.ok = false;
+        link.ok = 'fail';
         return link;
       });
   });
