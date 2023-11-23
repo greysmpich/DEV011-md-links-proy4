@@ -1,6 +1,28 @@
 {
-  "name": "md-links",
-  "version": "0.1.0",
+  "name": "@greysmpich/md-links",
+  "description": "Herramienta de línea de comando (CLI) que lee y analiza archivos en formato Markdown para verificar el estado de los enlaces que contengan y reportar algunas estadísticas",
+  "version": "1.0.0",
+  "main": "./index.js",
+  "bin": "./cli.js",
+  "keywords": [
+    "npm",
+    "cli",
+    "markdown",
+    "md",
+    "links",
+    "verification",
+    "analysis",
+    "status",
+    "statistics",
+    "node.js"
+  ],
+  "bugs": "https://github.com/greysmpich/DEV011-md-links-proy4/issues",
+  "license": "ISC",
+  "author": "Grecia Mendieta <greys.mpich@gmail.com> (https://github.com/greysmpich)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/greysmpich/DEV011-md-links-proy4.git"
+  },
   "engines": {
     "node": ">=16.x"
   },
