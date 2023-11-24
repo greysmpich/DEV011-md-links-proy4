@@ -6,15 +6,15 @@ jest.mock('axios');
 
 describe('mdLinks', () => {
   test('Debee retornar una promesa', () => {
-    expect(mdLinks("./README.md")).toBeInstanceOf(Promise);
+    expect(mdLinks('./markdownTestFile.md')).toBeInstanceOf(Promise);
   });
   test('Debe retornar la ruta absoluta si es una ruta absoluta', () => {
-    const absolutePath = functions.toAbsolutePath('./README.md');
+    const absolutePath = functions.toAbsolutePath('./markdownTestFile.md');
     expect(functions.isAbsolutePath(absolutePath)).toBe(true);
     expect(absolutePath).toBe(absolutePath);
   });
   test('Debe convertir la ruta a absoluta si es una ruta relativa', () => {  
-    const relativePath = './README.md';
+    const relativePath = './markdownTestFile.md';
     const absolutePath = functions.isAbsolutePath(relativePath) ? relativePath : functions.toAbsolutePath(relativePath);
     expect(functions.isAbsolutePath(relativePath)).toBe(false);
     expect(absolutePath).toBe(functions.toAbsolutePath(relativePath));
@@ -30,7 +30,7 @@ describe('mdLinks', () => {
     })
   });
   test('Debe resolver la promesa con un array de objets(links) cuando lee el archivo', () => {
-    const existingMarkdownPath = './README.md';
+    const existingMarkdownPath = './markdownTestFile.md';
   
     return mdLinks(existingMarkdownPath).then((extractedLinks) => {
       expect(extractedLinks).toBeDefined();
@@ -41,31 +41,34 @@ describe('mdLinks', () => {
 
 describe('mdLinks con validate', () => {
   test('Si validate es "false" debe resolver la promesa con un array de objetos(links)', () => {
-    const markdownPath = './README.md';
-    return mdLinks(markdownPath, false).then((extractedLinks) => {
+    const markdownPath = './markdownTestFile.md';
+    const validate = false;
+    return mdLinks(markdownPath, validate).then((extractedLinks) => {
       expect(extractedLinks).toBeDefined();
       expect(Array.isArray(extractedLinks)).toBe(true);
     });
   });
   
   test('Si validate es "false", debe resolver la promesa con los enlaces extraídos', () => {
-    const markdownPath = './prueba.md';
+    const markdownPath = './markdownTestFile.md';
+    const validate = false;
     const extractedLinks = [
-      { href: 'https://es.react.dev/learn', text: 'React', file: 'prueba.md' },
-      { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'prueba.md' },
-      { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'prueba.md' },
-      { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'prueba.md' },
+      { href: 'https://es.react.dev/learn', text: 'React', file: 'markdownTestFile.md' },
+      { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'markdownTestFile.md' },
+      { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'markdownTestFile.md' },
+      { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'markdownTestFile.md' },
     ];
 
     jest.spyOn(functions, 'readMarkdownFile').mockResolvedValue('contenido del archivo');
     jest.spyOn(functions, 'findLinks').mockResolvedValue(extractedLinks);
 
-    return mdLinks(markdownPath, false).then((result) => {
+    return mdLinks(markdownPath, validate).then((result) => {
       expect(result).toEqual(extractedLinks);
     });
   });
   test('Si validate es "true", debe resolver la promesa con un array de objetos(links) con dos nuevas propiedades: status y ok', () => {
-    const markdownPath = './prueba.md';
+    const markdownPath = './markdownTestFile.md';
+    const validate = true;
 
     axios.head
       .mockResolvedValueOnce({ status: 200 })
@@ -73,12 +76,12 @@ describe('mdLinks con validate', () => {
       .mockResolvedValueOnce({ status: 404 })
       .mockResolvedValueOnce({ status: 200 });
 
-        return mdLinks(markdownPath, true).then((result) => {
+        return mdLinks(markdownPath, validate).then((result) => {
         expect(result).toEqual([
-          { href: 'https://es.react.dev/learn', text: 'React', file: 'prueba.md', status: 200, ok: 'ok' },
-          { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'prueba.md', status: 'N/A', ok: 'fail' },
-          { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'prueba.md', status: 404, ok: 'fail' },
-          { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'prueba.md', status: 200, ok: 'ok' },
+          { href: 'https://es.react.dev/learn', text: 'React', file: 'markdownTestFile.md', status: 200, ok: 'ok' },
+          { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'markdownTestFile.md', status: 'N/A', ok: 'fail' },
+          { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'markdownTestFile.md', status: 404, ok: 'fail' },
+          { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'markdownTestFile.md', status: 200, ok: 'ok' },
         ]);
           expect(axios.head.mock.calls).toEqual([
             ['https://es.react.dev/learn'],
@@ -101,7 +104,6 @@ describe('validateLinks debe manejar los errores correctamente con respuesta ind
     .mockRejectedValueOnce({ response: { status: 404 } });
 
     return functions.validateLinks(links).catch((error) => {
-      //expect(error).toBeInstanceOf(Error);
       expect(error).toEqual([
         { href: 'https://www.paginaquenoexiste.com/', status: 'N/A', ok: 'fail' },
         { href: 'https://dribbble.com/errorpage', status: 404, ok: 'fail' },
@@ -112,4 +114,42 @@ describe('validateLinks debe manejar los errores correctamente con respuesta ind
       ]);
     })
   })
+})
+
+describe('mdLinks con validate y stats', () => {
+    test('Si stats es "true" y validate es "true" debe resolver la promesa con un array de objetos(stats) con las propiedades "Total, Unique y Broken"', () => {
+      const markdownPath = './markdownTestFile.md';
+      const validate = true;
+      const stats = true;
+
+      functions.validateLinks = jest.fn().mockResolvedValue([
+        { href: 'https://es.react.dev/learn', text: 'React', file: 'markdownTestFile.md', status: 200, ok: 'ok' },
+        { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'markdownTestFile.md', status: 'N/A', ok: 'fail' },
+        { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'markdownTestFile.md', status: 404, ok: 'fail' },
+        { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'markdownTestFile.md', status: 200, ok: 'ok' },
+      ]);
+
+      return mdLinks(markdownPath, validate, stats).then((result) => {
+        expect(result).toEqual({ Total: 4, Unique: 4, Broken: 2 });
+      });
+    });
+})
+
+describe('mdLinks con stats', () => {
+  test('Si stats es "true" y validate es "false" debe resolver la promesa con un array de objetos(stats) con las propiedades "Total y Unique"', () => {
+    const markdownPath = './markdownTestFile.md';
+    const validate = false;
+    const stats = true;
+
+    functions.findLinks = jest.fn().mockResolvedValue([
+      { href: 'https://es.react.dev/learn', text: 'React', file: 'markdownTestFile.md' },
+      { href: 'https://www.paginaquenoexiste.com/', text: 'Figma', file: 'markdownTestFile.md' },
+      { href: 'https://dribbble.com/errorpage', text: 'Dribble', file: 'markdownTestFile.md' },
+      { href: 'https://vuejs.org/guide/quick-start.html', text: 'Vue.js', file: 'markdownTestFile.md' },
+    ]);
+
+    return mdLinks(markdownPath, validate, stats).then((result) => {
+      expect(result).toEqual({ Total: 4, Unique: 4 });
+    });
+  });
 })
