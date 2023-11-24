@@ -1,6 +1,6 @@
 const functions = require("./functions.js");
 
-const mdLinks = (path, validate = false) => {
+const mdLinks = (path, validate = false, stats = false) => {
   return new Promise((resolve, reject) => {
     const absolutePath = functions.isAbsolutePath(path) ? path : functions.toAbsolutePath(path);
 
@@ -13,15 +13,22 @@ const mdLinks = (path, validate = false) => {
     }
 
     functions.readMarkdownFile(absolutePath)
-    .then((result) => functions.findLinks(result, absolutePath))
-    .then((extractedLinks) => {
-      if (validate) {
-        return functions.validateLinks(extractedLinks);
-       } else {
-        resolve(extractedLinks);
-       }
-    })
-     .then((result) => resolve(result))
+      .then((result) => functions.findLinks(result, absolutePath))
+      .then((extractedLinks) => {
+        if (validate && stats) {
+          return functions.validateLinks(extractedLinks)
+            .then((validatedLinks) => {
+            return functions.statsWithValidate(validatedLinks);
+          });
+        } else if (validate) {
+          return functions.validateLinks(extractedLinks);
+        } else if (stats) {
+          return functions.stats(extractedLinks);
+        } else {
+          resolve(extractedLinks);
+        }
+      })
+      .then((result) => resolve(result));
   });
 };
 

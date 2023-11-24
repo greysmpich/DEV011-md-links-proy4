@@ -60,3 +60,23 @@ exports.validateLinks = (links) => {
   });
   return Promise.all(linkPromises);
 };
+
+exports.stats = (links) => {
+  const uniqueLinks = links.filter((link, index) => {
+     return links.indexOf(link) === index;
+  })
+
+    return {
+      Total: links.length,
+      Unique: uniqueLinks.length
+    }
+};
+
+exports.statsWithValidate = (validatedLinks) => {
+  const brokenLinks = validatedLinks.filter((link) => link.ok === "fail");
+
+ return {
+  ...this.stats(validatedLinks),
+  Broken: brokenLinks.length,
+ }
+};

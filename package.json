@@ -2,8 +2,10 @@
   "name": "@greysmpich/md-links",
   "description": "Herramienta de línea de comando (CLI) que lee y analiza archivos en formato Markdown para verificar el estado de los enlaces que contengan y reportar algunas estadísticas",
   "version": "1.0.0",
-  "main": "./index.js",
-  "bin": "./cli.js",
+  "main": "src/index.js",
+  "bin": {
+    "md-links": "src/cli.js"
+  },
   "keywords": [
     "npm",
     "cli",
