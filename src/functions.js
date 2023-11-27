@@ -29,7 +29,7 @@ exports.readMarkdownFile = (absolutePath) => {
 };
 
 exports.findLinks = (content, absolutePath) => {
-  const regExpLink = /\[([^\]]*)\]\((.*?)\)/g;
+  const regExpLink = /\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g;
   const links = [];
   let coincidence;
   const fileName = path.basename(absolutePath);
@@ -39,7 +39,7 @@ exports.findLinks = (content, absolutePath) => {
       text: coincidence[1],
       file: fileName,
     };
-    links.push(linkObject);
+      links.push(linkObject);
   }
   return links;
 };
@@ -58,7 +58,7 @@ exports.validateLinks = (links) => {
         return link;
       });
   });
-  return Promise.all(linkPromises);
+  return Promise.all(linkPromises)
 };
 
 exports.stats = (links) => {
