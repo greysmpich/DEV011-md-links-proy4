@@ -1,7 +1,7 @@
 {
   "name": "@greysmpich/markdown-links",
   "description": "Herramienta de línea de comando (CLI) que lee y analiza archivos en formato Markdown para verificar el estado de los enlaces que contengan y reportar algunas estadísticas",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": false,
   "main": "src/index.js",
   "bin": {
