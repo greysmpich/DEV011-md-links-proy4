@@ -1,16 +1,17 @@
 {
-  "name": "@greysmpich/mdown-links",
+  "name": "@greysmpich/mdwn-links",
   "description": "Herramienta de línea de comando (CLI) que lee y analiza archivos en formato Markdown para verificar el estado de los enlaces que contengan y reportar algunas estadísticas",
   "version": "1.0.0",
+  "private": false,
   "main": "src/index.js",
   "bin": {
-    "mdown-links": "src/cli.js"
+    "mdwn-links": "src/cli.js"
   },
   "keywords": [
     "npm",
     "cli",
     "markdown",
-    "mdown",
+    "mdwn",
     "md",
     "links",
     "verification",
