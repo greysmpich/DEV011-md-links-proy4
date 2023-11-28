@@ -74,9 +74,11 @@ exports.stats = (links) => {
 
 exports.statsWithValidate = (validatedLinks) => {
   const brokenLinks = validatedLinks.filter((link) => link.ok === "fail");
+  const unbrokenLinks = validatedLinks.filter((link) => link.ok === "ok");
 
  return {
   ...this.stats(validatedLinks),
+  Active: unbrokenLinks.length,
   Broken: brokenLinks.length,
  }
 };
