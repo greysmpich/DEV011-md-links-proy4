@@ -9,13 +9,19 @@ const stats = process.argv.includes("--stats");
 mdLinks(path, validate, stats)
   .then((results) => {
     if(!Array.isArray(results) && typeof results === 'object'){
-        Object.keys(results).forEach((key) => {
-            console.log(`${key}: ${results[key]}`);
-          });
+      Object.keys(results).forEach((key) => {
+       if(key === 'Broken'){
+          console.log(`${key}: ${colors.red(results[key])}`);
+        } else if(key === 'Active') {
+          console.log(`${key}: ${colors.green(results[key])}`);
+        } else {
+          console.log(`${key}: ${colors.cyan(results[key])}`);
+        }
+        });
     } else if(Array.isArray(results)){
     results.forEach((link) => {
         if (link.Total) {
-            console.log(`Total: ${link.Total}, Unique: ${link.Unique}`);
+            console.log(`Total: ${(link.Total)}, Unique: ${(link.Unique)}`);
           } else if (!link.ok && !link.status) {
             console.log(`${link.text} - ${colors.cyan(link.href)} - File: ${link.file}`);
           } else if (link.ok === "ok") {
@@ -26,6 +32,4 @@ mdLinks(path, validate, stats)
         });
    } 
   })
-  .catch((error) => {
-    console.log(error);
-  });
+  .catch((error) => {console.log(error);});

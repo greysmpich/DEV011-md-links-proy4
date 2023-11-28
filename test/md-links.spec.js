@@ -117,7 +117,7 @@ describe('validateLinks debe manejar los errores correctamente con respuesta ind
 })
 
 describe('mdLinks con validate y stats', () => {
-    test('Si stats es "true" y validate es "true" debe resolver la promesa con un array de objetos(stats) con las propiedades "Total, Unique y Broken"', () => {
+    test('Si stats es "true" y validate es "true" debe resolver la promesa con un array de objetos(stats) con las propiedades "Total, Unique, Active y Broken"', () => {
       const markdownPath = './markdownTestFile.md';
       const validate = true;
       const stats = true;
@@ -130,7 +130,7 @@ describe('mdLinks con validate y stats', () => {
       ]);
 
       return mdLinks(markdownPath, validate, stats).then((result) => {
-        expect(result).toEqual({ Total: 4, Unique: 4, Broken: 2 });
+        expect(result).toEqual({ Total: 4, Unique: 4, Active: 2, Broken: 2 });
       });
     });
 })
